@@ -18,9 +18,7 @@ public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "firstName", nullable = false)
     String firstName;
-    @Column(name = "lastName", nullable = false)
     String lastName;
     @Column(nullable = false, unique = true)
     String email;
