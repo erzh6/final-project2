@@ -30,7 +30,7 @@ public class StudentController {
     public ResponseEntity<StudentResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getById(id));
     }
-    @PostMapping("/search")
+    @GetMapping("/search")
     public ResponseEntity<List<StudentResponse>> search(@RequestParam String name) {
         return ResponseEntity.ok(studentService.search(name));
     }

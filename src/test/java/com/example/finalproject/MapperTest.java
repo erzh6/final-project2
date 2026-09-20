@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MapperTest {
 
     @Test
-    void StudentResponse() {
+    void StudentResponseTest() {
         Student student = new Student();
         student.setId(1L);
         student.setFirstName("Азамат");
