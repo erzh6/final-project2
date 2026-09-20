@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface StudentRepo extends JpaRepository<Student, Long> {
-   @Query
+
+   @Query("select s from Student s where lower(s.firstName) like lower(concat('%', :name, '%')) " +
+           "or lower(s.lastName) like lower(concat('%', :name, '%'))")
    List<Student> searchByName(@Param("name") String name);
 }
