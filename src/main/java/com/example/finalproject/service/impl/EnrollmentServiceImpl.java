@@ -11,7 +11,9 @@ import com.example.finalproject.model.Student;
 import com.example.finalproject.repo.CourseRepo;
 import com.example.finalproject.repo.EnrollmentRepo;
 import com.example.finalproject.repo.StudentRepo;
+import com.example.finalproject.service.CourseService;
 import com.example.finalproject.service.EnrollmentService;
+import com.example.finalproject.service.StudentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +25,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentRepo enrollmentRepo;
     private final StudentRepo studentRepo;
     private final CourseRepo courseRepo;
+    private final StudentService studentService;
+    private final CourseService courseService;
 
-    public EnrollmentServiceImpl(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, CourseRepo courseRepo) {
+    public EnrollmentServiceImpl(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, CourseRepo courseRepo, StudentService studentService, CourseService courseService) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.courseRepo = courseRepo;
+        this.studentService = studentService;
+        this.courseService = courseService;
     }
 
     @Override
     public EnrollmentResponse enroll(Long studentId, Long courseId) {
-        Student student = findStudent(studentId);
-        Course course = findCourse(courseId);
+        Student student = studentService.findStudentById(studentId);
+        Course course = courseService.findCourseById(courseId);
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
         enrollment.setCourse(course);
@@ -78,14 +84,4 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 //        }
 //        return result;
     }
-
-    private Student findStudent(Long id) {
-        return studentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student with id " + id + " not found"));
     }
-
-    private Course findCourse(Long id) {
-        return courseRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
-    }
-}
