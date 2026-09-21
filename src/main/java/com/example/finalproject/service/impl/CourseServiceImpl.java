@@ -35,13 +35,13 @@ private final TeacherRepo teacherRepo;
 
     @Override
     public CourseResponse getById(Long id) {
-        return Mapper.toCourseResponse(findCourse(id));
+        return Mapper.toCourseResponse(findCourseById(id));
     }
 
 
     @Override
     public CourseResponse update(Long id, CourseRequest request) {
-        Course course = findCourse(id);
+        Course course = findCourseById(id);
         course.setTitle(request.getTitle());
         course.setDescription(request.getDescription());
         course.setCredits(request.getCredits());
@@ -58,14 +58,14 @@ private final TeacherRepo teacherRepo;
                 .orElseThrow(() -> new NotFoundException("Teacher with id " + teacherId + " not found"));
     }
 
-    private Course findCourse(Long id) {
-        return courseRepo.findById(id).orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
-    }
+//    private Course findCourse(Long id) {
+//        return courseRepo.findById(id).orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
+//    }
 
 
     @Override
     public void delete(Long id) {
-        Course course = findCourse(id);
+        Course course = findCourseById(id);
         courseRepo.delete(course);
     }
 
@@ -78,5 +78,11 @@ private final TeacherRepo teacherRepo;
         course.setTeacher(findTeacherOrNull(request.getTeacherId()));
 
         return Mapper.toCourseResponse(courseRepo.save(course));
+    }
+
+    @Override
+    public Course findCourseById(Long id) {
+        return courseRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Course with that id not found"));
     }
 }
