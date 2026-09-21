@@ -51,24 +51,32 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<CourseResponse> getStudentCourses(Long studentId) {
-        findStudent(studentId);
-
-        List<CourseResponse> result = new ArrayList<>();
-        for (Enrollment enrollment : enrollmentRepo.findByStudentId(studentId)) {
-            result.add(Mapper.toCourseResponse(enrollment.getCourse()));
-        }
-        return result;
+        return enrollmentRepo.findByStudentId(studentId)
+                .stream()
+                .map(Enrollment::getCourse)
+                .map(Mapper::toCourseResponse)
+                .toList();
+        //        findStudent(studentId);
+//        List<CourseResponse> result = new ArrayList<>();
+//        for (Enrollment enrollment : enrollmentRepo.findByStudentId(studentId)) {
+//            result.add(Mapper.toCourseResponse(enrollment.getCourse()));
+//        }
+//        return result;
     }
 
     @Override
     public List<StudentResponse> getCourseStudents(Long courseId) {
-        findCourse(courseId);
-
-        List<StudentResponse> result = new ArrayList<>();
-        for (Enrollment enrollment : enrollmentRepo.findByCourseId(courseId)) {
-            result.add(Mapper.toStudentResponse(enrollment.getStudent()));
-        }
-        return result;
+        return enrollmentRepo.findByCourseId(courseId)
+                .stream()
+                .map(Enrollment::getStudent)
+                .map(Mapper::toStudentResponse)
+                .toList();
+        //findCourse(courseId);
+//        List<StudentResponse> result = new ArrayList<>();
+//        for (Enrollment enrollment : enrollmentRepo.findByCourseId(courseId)) {
+//            result.add(Mapper.toStudentResponse(enrollment.getStudent()));
+//        }
+//        return result;
     }
 
     private Student findStudent(Long id) {
