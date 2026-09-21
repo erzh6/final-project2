@@ -19,4 +19,6 @@ public interface StudentService {
     StudentResponse update(Long id, StudentRequest request);
 
     void delete(Long id);
+
+    Student findStudentById(Long id);
 }
