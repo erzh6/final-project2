@@ -44,11 +44,10 @@ private final EnrollmentRepo enrollmentRepo;
 
     @Override
     public List<StudentResponse> search(String name) {
-        List<StudentResponse> result = new ArrayList<>();
-        for (Student student : studentRepo.searchByName(name)) {
-            result.add(Mapper.toStudentResponse(student));
-        }
-        return result;
+        return studentRepo.searchByName(name)
+                .stream()
+                .map(Mapper::toStudentResponse)
+                .toList();
     }
 
     @Override
@@ -56,6 +55,7 @@ private final EnrollmentRepo enrollmentRepo;
         Student student = new Student();
         student.setFirstName(request.getFirstName());
         student.setLastName(request.getLastName());
+        //сделать проверку
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
@@ -66,6 +66,7 @@ private final EnrollmentRepo enrollmentRepo;
         Student student = findStudent(id);
         student.setFirstName(request.getFirstName());
         student.setLastName(request.getLastName());
+        //сделать проверку
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
@@ -79,7 +80,7 @@ private final EnrollmentRepo enrollmentRepo;
 
     private Student findStudent(Long id) {
         return studentRepo.findById(id)
-                .orElseThrow(()-> new NotFoundException("Student Not Found"));
+                .orElseThrow(()-> new NotFoundException("Student with id: " + id + "Not Found"));
     }
 }
 
