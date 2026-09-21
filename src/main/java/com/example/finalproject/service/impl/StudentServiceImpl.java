@@ -2,6 +2,7 @@ package com.example.finalproject.service.impl;
 
 import com.example.finalproject.dto.StudentRequest;
 import com.example.finalproject.dto.StudentResponse;
+import com.example.finalproject.exceptions.BadRequestException;
 import com.example.finalproject.exceptions.NotFoundException;
 import com.example.finalproject.mapper.Mapper;
 import com.example.finalproject.model.Student;
@@ -55,7 +56,12 @@ private final EnrollmentRepo enrollmentRepo;
         Student student = new Student();
         student.setFirstName(request.getFirstName());
         student.setLastName(request.getLastName());
-        //сделать проверку
+        if (studentRepo.existsByEmail(request.getEmail())){
+            throw new BadRequestException("Student with that email exists");
+        }
+        if (studentRepo.existsByPhone(request.getPhone())){
+            throw new BadRequestException("Student with that phone exists");
+        }
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
@@ -66,7 +72,12 @@ private final EnrollmentRepo enrollmentRepo;
         Student student = findStudent(id);
         student.setFirstName(request.getFirstName());
         student.setLastName(request.getLastName());
-        //сделать проверку
+        if(studentRepo.existsByEmail(request.getEmail())){
+            throw new BadRequestException("Student with that email exists");
+        }
+        if (studentRepo.existsByPhone(request.getPhone())){
+            throw new BadRequestException("Student with that phone exists");
+        }
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
