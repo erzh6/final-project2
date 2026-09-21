@@ -39,8 +39,7 @@ private final EnrollmentRepo enrollmentRepo;
 
     @Override
     public StudentResponse getById(Long id) {
-        Student student = findStudent(id);
-        return Mapper.toStudentResponse(student);
+        return Mapper.toStudentResponse(findStudentById(id));
     }
 
     @Override
@@ -53,15 +52,15 @@ private final EnrollmentRepo enrollmentRepo;
 
     @Override
     public StudentResponse create(StudentRequest request) {
-        Student student = new Student();
-        student.setFirstName(request.getFirstName());
-        student.setLastName(request.getLastName());
         if (studentRepo.existsByEmail(request.getEmail())){
             throw new BadRequestException("Student with that email exists");
         }
         if (studentRepo.existsByPhone(request.getPhone())){
             throw new BadRequestException("Student with that phone exists");
         }
+        Student student = new Student();
+        student.setFirstName(request.getFirstName());
+        student.setLastName(request.getLastName());
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
@@ -69,15 +68,15 @@ private final EnrollmentRepo enrollmentRepo;
 
     @Override
     public StudentResponse update(Long id, StudentRequest request) {
-        Student student = findStudent(id);
-        student.setFirstName(request.getFirstName());
-        student.setLastName(request.getLastName());
         if(studentRepo.existsByEmail(request.getEmail())){
             throw new BadRequestException("Student with that email exists");
         }
         if (studentRepo.existsByPhone(request.getPhone())){
             throw new BadRequestException("Student with that phone exists");
         }
+        Student student = findStudentById(id);
+        student.setFirstName(request.getFirstName());
+        student.setLastName(request.getLastName());
         student.setEmail(request.getEmail());
         student.setPhone(request.getPhone());
         return Mapper.toStudentResponse(studentRepo.save(student));
@@ -85,13 +84,19 @@ private final EnrollmentRepo enrollmentRepo;
 
     @Override
     public void delete(Long id) {
-        Student student = findStudent(id);
+        Student student = findStudentById(id);
         studentRepo.delete(student);
     }
 
-    private Student findStudent(Long id) {
+    @Override
+    public Student findStudentById(Long id) {
         return studentRepo.findById(id)
-                .orElseThrow(()-> new NotFoundException("Student with id: " + id + "Not Found"));
+                .orElseThrow(() -> new NotFoundException("Student with that id: " + id + "not found"));
     }
-}
+
+//    private Student findStudent(Long id) {
+//        return studentRepo.findById(id)
+//                .orElseThrow(()-> new NotFoundException("Student with id: " + id + "Not Found"));
+    }
+
 
