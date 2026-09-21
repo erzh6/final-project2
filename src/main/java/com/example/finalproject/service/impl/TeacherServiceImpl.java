@@ -7,6 +7,7 @@ import com.example.finalproject.mapper.Mapper;
 import com.example.finalproject.model.Teacher;
 import com.example.finalproject.repo.TeacherRepo;
 import com.example.finalproject.service.TeacherService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,19 +23,26 @@ private final TeacherRepo teacherRepo;
 
     @Override
     public List<TeacherResponse> getAll() {
-        List<TeacherResponse> result = new ArrayList<>();
-        for (Teacher teacher : teacherRepo.findAll()) {
-            result.add(Mapper.toTeacherResponse(teacher));
-        }
-        return result;
+        return  teacherRepo.findAll()
+                .stream()
+                .map(Mapper::toTeacherResponse)
+                .toList();
+//        List<TeacherResponse> result = new ArrayList<>();
+//        for (Teacher teacher : teacherRepo.findAll()) {
+//            result.add(Mapper.toTeacherResponse(teacher));
+//        }
+//        return result;
 
     }
 
     @Override
     public TeacherResponse getById(Long id) {
-        Teacher teacher = teacherRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Teacher with id: " + id + " not found"));
-        return Mapper.toTeacherResponse(teacher);
+        return teacherRepo.findById(id)
+                .map(Mapper::toTeacherResponse)
+                .orElseThrow(() -> new NotFoundException("Teacher with id " + id + " not found"));
+     //   Teacher teacher = teacherRepo.findById(id)
+       //         .orElseThrow(() -> new NotFoundException("Teacher with id: " + id + " not found"));
+       // return Mapper.toTeacherResponse(teacher);
     }
 
     @Override
